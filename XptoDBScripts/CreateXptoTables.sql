@@ -1,6 +1,6 @@
 USE [XPTO]
 GO
-/****** Object:  Table [dbo].[Department]    Script Date: 4/7/2019 11:59:20 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -18,7 +18,7 @@ CREATE TABLE [dbo].[Department](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[Employee]    Script Date: 4/7/2019 11:59:20 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -44,46 +44,6 @@ CREATE TABLE [dbo].[Employee](
 
 GO
 
-/****** Object:  Table [dbo].[User]    Script Date: 4/7/2019 11:59:20 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[User](
-	[UserId] [int] IDENTITY(1,1) NOT NULL,
-	[Email] [nvarchar](520) NOT NULL,
-	[Password] [nvarchar](128) NOT NULL,
-	[Deleted] [bit] NOT NULL,
-	[ModifiedBy] [int] NOT NULL,
-	[LastUpdate] [datetime] NULL
- CONSTRAINT [PK_UserId] PRIMARY KEY CLUSTERED 
-(
-	[UserId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-
-GO
-/****** Object:  Table [dbo].[UserRoles]    Script Date: 4/7/2019 11:59:20 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[UserRoles](
-	[UserId] [int] NOT NULL,
-	[RoleId] [int] NOT NULL,
-	[Deleted] [bit] NOT NULL,
-	[ModifiedBy] [int] NOT NULL,
-	[LastUpdate] [datetime] NULL,
- PRIMARY KEY CLUSTERED 
-(
-	[UserId] ASC,
-	[RoleId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-
-
-GO
-/****** Object:  Table [dbo].[Roles]    Script Date: 4/7/2019 11:59:20 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -101,6 +61,44 @@ CREATE TABLE [dbo].[Roles](
 ) ON [PRIMARY]
 
 GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[User](
+	[UserId] [int] IDENTITY(1,1) NOT NULL,
+	[Email] [nvarchar](520) NOT NULL,
+	[Password] [nvarchar](128) NOT NULL,
+	[Deleted] [bit] NOT NULL,
+	[ModifiedBy] [int] NOT NULL,
+	[LastUpdate] [datetime] NULL,
+ CONSTRAINT [PK_UserId] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserRoles](
+	[UserId] [int] NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[Deleted] [bit] NOT NULL,
+	[ModifiedBy] [int] NOT NULL,
+	[LastUpdate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
 SET IDENTITY_INSERT [dbo].[Department] ON 
 
 GO
@@ -111,22 +109,6 @@ GO
 INSERT [dbo].[Department] ([DepartmentId], [DepartmentName], [Active], [ModifiedBy], [LastUpdate]) VALUES (3, N'Xpto - Dublin', 1, 1, CAST(N'2019-04-07 16:07:55.950' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[Department] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Employee] ON 
-
-GO
-INSERT [dbo].[Employee] ([EmployeeId], [FirstName], [LastName], [MobilePhoneNumber], [OfficePhoneNumber], [DepartmentId], [HireDate], [Email], [ExitDate], [Deleted], [ModifiedBy], [LastUpdate]) VALUES (9, N'TestEmployeeName', N'TestEmployeeLastName', N'123456789', N'123456789', 1, CAST(N'2019-04-07 23:32:17.613' AS DateTime), N'TestEmail1@enear.co', NULL, 0, 1, CAST(N'2019-04-07 23:32:17.613' AS DateTime))
-GO
-SET IDENTITY_INSERT [dbo].[Employee] OFF
-
-SET IDENTITY_INSERT [dbo].[User] ON 
-
-GO
-INSERT [dbo].[User] ([UserId],[Email], [Password], [Deleted], [ModifiedBy], [LastUpdate]) 
-VALUES (1, N'AdminUser@enear.co', N'23fd44228071730e3457dc5de887b3ae', 0, -1, GETDATE())
-GO
-SET IDENTITY_INSERT [dbo].[User] OFF
-go
 GO
 SET IDENTITY_INSERT [dbo].[Roles] ON 
 
@@ -139,26 +121,31 @@ INSERT [dbo].[Roles] ([RoleId], [RoleName], [Active], [ModifiedBy], [LastUpdate]
 GO
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 GO
+SET IDENTITY_INSERT [dbo].[User] ON 
 
-
-INSERT [dbo].[UserRoles] ([UserId],[RoleId], [Deleted], [ModifiedBy], [LastUpdate]) 
-VALUES (1, 1, 0, -1, GETDATE())
 GO
-
-
+INSERT [dbo].[User] ([UserId], [Email], [Password], [Deleted], [ModifiedBy], [LastUpdate]) VALUES (1, N'AdminUser@enear.co', N'e10adc3949ba59abbe56e057f20f883e', 0, -1, CAST(N'2019-04-08 17:40:59.197' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[User] OFF
+GO
+INSERT [dbo].[UserRoles] ([UserId], [RoleId], [Deleted], [ModifiedBy], [LastUpdate]) VALUES (1, 1, 0, -1, CAST(N'2019-04-08 17:47:53.727' AS DateTime))
+GO
 ALTER TABLE [dbo].[Employee]  WITH CHECK ADD  CONSTRAINT [fk_Emp_Department] FOREIGN KEY([DepartmentId])
 REFERENCES [dbo].[Department] ([DepartmentId])
 GO
 ALTER TABLE [dbo].[Employee] CHECK CONSTRAINT [fk_Emp_Department]
 GO
-
+ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD  CONSTRAINT [fk_UserRoles_Roles] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[Roles] ([RoleId])
+GO
+ALTER TABLE [dbo].[UserRoles] CHECK CONSTRAINT [fk_UserRoles_Roles]
+GO
 ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD  CONSTRAINT [fk_UserRoles_User] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([UserId])
 GO
 ALTER TABLE [dbo].[UserRoles] CHECK CONSTRAINT [fk_UserRoles_User]
 GO
-ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD  CONSTRAINT [fk_UserRoles_Roles] FOREIGN KEY([RoleId])
-REFERENCES [dbo].[Roles] ([RoleId])
+USE [master]
 GO
-ALTER TABLE [dbo].[UserRoles] CHECK CONSTRAINT [fk_UserRoles_Roles]
+ALTER DATABASE [XPTO] SET  READ_WRITE 
 GO

@@ -1,7 +1,6 @@
 USE [master]
 GO
 
-/****** Object:  Database [XPTO]    Script Date: 4/8/2019 12:01:51 AM ******/
 CREATE DATABASE [XPTO]
  CONTAINMENT = NONE
  ON  PRIMARY 
