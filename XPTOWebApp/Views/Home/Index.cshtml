@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+    var user = User as BasePrincipal;
+}
+
+<div class="jumbotron">
+    <h1 style="margin-bottom: 40px;">XPTO Company</h1>
+    <div>
+        @if (user.IsAdministrator || user.CanManageDepartments)
+        {
+            <a href='@Url.Action("Index", "Departments")' class="btn btn-primary btn-lg">
+                <div title="Manage Departments">Manage Departments</div>
+            </a>
+        }
+        @if (user.IsAdministrator || user.CanManageDepartments)
+        {
+                <a href='@Url.Action("Index", "Employees")' class="btn btn-primary btn-lg">
+                    <div title="Manage Departments">Manage Employess</div>
+                </a>
+        }
+
+    </div>
+</div>
+

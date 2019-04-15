@@ -59,14 +59,20 @@
     <Compile Include="Employee.cs">
       <DependentUpon>XptoModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="EmployeeRole.cs">
-      <DependentUpon>XptoModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs">
       <DependentUpon>XptoModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>XptoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRole.cs">
+      <DependentUpon>XptoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Validator\DepartmentValidator.cs" />
     <Compile Include="Validator\EmployeeValidator.cs" />
+    <Compile Include="Validator\RoleValidator.cs" />
+    <Compile Include="Validator\UserValidator.cs" />
     <Compile Include="XptoModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

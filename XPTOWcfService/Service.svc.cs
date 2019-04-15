@@ -22,32 +22,118 @@ namespace XPTOWcfService
 
         public bool CreateEmployee(Employee employee)
         {
-            return EmployeeBLL.Instance.CreateEmployee(employee);
+            try
+            {
+                return EmployeeBLL.Instance.CreateEmployee(employee);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CreateEmployee", ex);
+                SendException(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
+            }
+
+            return false;
         }
+
 
         public bool DeleteEmployee(int employeeId)
         {
-            return EmployeeBLL.Instance.DeleteEmployee(employeeId);
+            try
+            {
+                return EmployeeBLL.Instance.DeleteEmployee(employeeId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CreateEmployee", ex);
+                SendException(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
+            }
+            return false;
         }
 
-        public IQueryable<Employee> GetAllEmployees()
+        public IQueryable<ServiceEmployee> GetAllEmployees()
         {
-            return EmployeeBLL.Instance.GetAllEmployees();
+            var employees =  EmployeeBLL.Instance.GetAllEmployees();
+            return (from e in employees
+                    select new ServiceEmployee
+                    {
+                        EmployeeId = e.EmployeeId,
+                        FirstName = e.FirstName,
+                        LastName = e.LastName,
+                        HireDate = e.HireDate,
+                        MobilePhoneNumber = e.MobilePhoneNumber,
+                        OfficePhoneNumber = e.OfficePhoneNumber,
+                        DepartmentId = e.DepartmentId,
+                        DepartmentName = e.DepartmentName,
+                        Email = e.Email,
+                        ExitDate = e.ExitDate,
+                        Deleted = e.Deleted,
+                        ModifiedBy = e.ModifiedBy,
+                        LastUpdate = e.LastUpdate
+                    });
         }
 
-        public Employee GetEmployeeById(int employeeId)
+        public ServiceEmployee GetEmployeeById(int employeeId)
         {
-            return EmployeeBLL.Instance.GetEmployeeById(employeeId);
+            var e = EmployeeBLL.Instance.GetEmployeeById(employeeId);
+            return  new ServiceEmployee
+            {
+                EmployeeId = e.EmployeeId,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                HireDate = e.HireDate,
+                MobilePhoneNumber = e.MobilePhoneNumber,
+                OfficePhoneNumber = e.OfficePhoneNumber,
+                DepartmentId = e.DepartmentId,
+                DepartmentName = e.DepartmentName,
+                Email = e.Email,
+                ExitDate = e.ExitDate,
+                Deleted = e.Deleted,
+                ModifiedBy = e.ModifiedBy,
+                LastUpdate = e.LastUpdate
+            };
         }
 
         public bool UpdateEmployee(Employee employee)
         {
-            return EmployeeBLL.Instance.UpdateEmployee(employee);
+            try
+            {
+                if (employee != null)
+                {
+                    return EmployeeBLL.Instance.UpdateEmployee(employee);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("UpdateEmployee", ex);
+                return false;
+            }
+
+            return false;
         }
 
-        public bool EmailExists(string email) {
+        private XptoModel.Employee PopulateEmployeeModel(Employee employee, bool isUpdate)
+        {
+            var emp =  new XptoModel.Employee
+            {
+                 FirstName = employee.FirstName,
+                 LastName = employee.LastName,
+                 MobilePhoneNumber = employee.MobilePhoneNumber,
+                 OfficePhoneNumber = employee.OfficePhoneNumber,
+                 DepartmentId = employee.DepartmentId,
+                 HireDate = employee.HireDate,
+                 Email = employee.Email,
+                 ExitDate = employee.ExitDate,
+                 Deleted = employee.Deleted,
+                 ModifiedBy = employee.ModifiedBy,
+                 LastUpdate = employee.LastUpdate
+            };
 
-            return EmployeeBLL.Instance.CheckIfEmailExists(email);
+            if (isUpdate)
+            {
+                emp.EmployeeId = employee.EmployeeId;
+            }
+
+            return emp;
         }
 
         #endregion
@@ -55,31 +141,106 @@ namespace XPTOWcfService
         #region Department
         public bool CreateDepartment(Department department)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return DepartmentBLL.Instance.CreateDepartment(department);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CreateDepartment", ex);
+                SendException(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
+            }
+            return false;
         }
 
         public bool DeleteDepartment(int departmentId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return DepartmentBLL.Instance.DeleteDepartment(departmentId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CreateDepartment", ex);
+                SendException(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
+            }
+
+            return false;
         }
 
         public bool UpdateDepartment(Department department)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (department != null)
+                {
+                    return DepartmentBLL.Instance.UpdateDepartment(department);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("UpdateEmployee", ex);
+                SendException(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
+            }
+
+            return false;
         }
 
 
         public IQueryable<Department> GetAllDepartments()
         {
-            throw new NotImplementedException();
+            return DepartmentBLL.Instance.GetAllDepartments();
+        }
+
+        public Department GetDepartmentById(int departmentId)
+        {
+            return DepartmentBLL.Instance.GetDepartmentById(departmentId);
         }
 
         #endregion
 
-        #region Authenticate
+        #region User
         public bool AuthenticateUser(Authenticate authenticate)
         {
-            return AccountBLL.Instance.ValidateUser(authenticate.Email, authenticate.Password);
+            return UserBLL.Instance.ValidateUser(authenticate.Email, authenticate.Password);
+        }
+
+        public bool CreateUser(User user) {
+            return UserBLL.Instance.CreateUser(user);
+        }
+
+        public bool DeleteUser(int userId)
+        {
+            return UserBLL.Instance.DeleteUser(userId);
+        }
+
+        public User GetUserById(int userId)
+        {
+            return UserBLL.Instance.GetUserById(userId);
+        }
+        public IQueryable<ServiceUserRoles> GetUserRoles(int userId)
+        {
+            var userRoles =  UserBLL.Instance.GetUserRoles(userId);
+            return (from r in userRoles
+                   select new ServiceUserRoles
+                   {
+                       UserId = r.UserId,
+                       RoleId = r.RoleId,
+                       RoleName = r.RoleName,
+                       Deleted = r.Deleted,
+                       ModifiedBy = r.ModifiedBy,
+                       LastUpdate = r.LastUpdate,
+                   });
+        }
+
+        public IQueryable<Role> GetAllRoles() {
+
+            return RolesBLL.Instance.GetAllRoles();
+           
+        }
+        public IQueryable<User> GetAllUsers()
+        {
+            return UserBLL.Instance.GetAllUsers();
         }
 
         private bool ValidateUserData(Authenticate authenticate)
@@ -87,8 +248,22 @@ namespace XPTOWcfService
             return string.IsNullOrEmpty(authenticate.Email) ||
                    string.IsNullOrEmpty(authenticate.Password) ? false : true;
         }
+
+        public bool EmailExists(string email)
+        {
+
+            return UserBLL.Instance.CheckIfEmailExists(email);
+        }
         #endregion
 
+        public void SendException(string operation, string message)
+        {
+            throw new FaultException<FaultContract>(new FaultContract
+            {
+                Error_Message = message,
+                Operation = operation
+            }, new FaultReason(message));
+        }
     }
 }
 

@@ -12,15 +12,15 @@ namespace XptoModel
     using System;
     using System.Collections.Generic;
     
-    public partial class EmployeeRole
+    public partial class UserRole
     {
-        public int EmployeeId { get; set; }
+        public int UserId { get; set; }
         public int RoleId { get; set; }
         public bool Deleted { get; set; }
         public int ModifiedBy { get; set; }
         public Nullable<System.DateTime> LastUpdate { get; set; }
     
-        public virtual Role Role { get; set; }
-        public virtual Employee Employee { get; set; }
+        public virtual Role Role { internal get; set; }
+        public virtual User User { get; set; }
     }
 }

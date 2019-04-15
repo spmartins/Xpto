@@ -22,23 +22,12 @@
           <Property Name="EmployeeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FirstName" Type="nvarchar" MaxLength="520" Nullable="false" />
           <Property Name="LastName" Type="nvarchar" MaxLength="520" Nullable="false" />
-          <Property Name="Password" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="MobilePhoneNumber" Type="nvarchar" MaxLength="520" />
           <Property Name="OfficePhoneNumber" Type="nvarchar" MaxLength="520" />
           <Property Name="DepartmentId" Type="int" Nullable="false" />
           <Property Name="HireDate" Type="datetime" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="520" />
           <Property Name="ExitDate" Type="datetime" />
-          <Property Name="Deleted" Type="bit" Nullable="false" />
-          <Property Name="ModifiedBy" Type="int" Nullable="false" />
-          <Property Name="LastUpdate" Type="datetime" />
-        </EntityType>
-        <EntityType Name="EmployeeRoles">
-          <Key>
-            <PropertyRef Name="EmployeeId" />
-          </Key>
-          <Property Name="EmployeeId" Type="int" Nullable="false" />
-          <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="Deleted" Type="bit" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="LastUpdate" Type="datetime" />
@@ -50,6 +39,27 @@
           <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="520" Nullable="false" />
           <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" Nullable="false" />
+          <Property Name="LastUpdate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="520" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" Nullable="false" />
+          <Property Name="LastUpdate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="LastUpdate" Type="datetime" />
         </EntityType>
@@ -65,46 +75,47 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_EmpRoles_Emp">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
-          <End Role="EmployeeRoles" Type="Self.EmployeeRoles" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Employee">
-              <PropertyRef Name="EmployeeId" />
-            </Principal>
-            <Dependent Role="EmployeeRoles">
-              <PropertyRef Name="EmployeeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_EmpRoles_Roles">
+        <Association Name="fk_UserRoles_Roles">
           <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
-          <End Role="EmployeeRoles" Type="Self.EmployeeRoles" Multiplicity="*" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Roles">
               <PropertyRef Name="RoleId" />
             </Principal>
-            <Dependent Role="EmployeeRoles">
+            <Dependent Role="UserRoles">
               <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_UserRoles_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="XPTOModelStoreContainer">
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EmployeeRoles" EntityType="Self.EmployeeRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="fk_Emp_Department" Association="Self.fk_Emp_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="Employee" EntitySet="Employee" />
           </AssociationSet>
-          <AssociationSet Name="fk_EmpRoles_Emp" Association="Self.fk_EmpRoles_Emp">
-            <End Role="Employee" EntitySet="Employee" />
-            <End Role="EmployeeRoles" EntitySet="EmployeeRoles" />
-          </AssociationSet>
-          <AssociationSet Name="fk_EmpRoles_Roles" Association="Self.fk_EmpRoles_Roles">
+          <AssociationSet Name="fk_UserRoles_Roles" Association="Self.fk_UserRoles_Roles">
             <End Role="Roles" EntitySet="Roles" />
-            <End Role="EmployeeRoles" EntitySet="EmployeeRoles" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="fk_UserRoles_User" Association="Self.fk_UserRoles_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -131,50 +142,27 @@
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="LastUpdate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="EmployeeRoles" Relationship="XPTOModel.fk_EmpRoles_Roles" FromRole="Role" ToRole="EmployeeRole" />
+          <NavigationProperty Name="UserRoles" Relationship="XPTOModel.fk_UserRoles_Roles" FromRole="Role" ToRole="UserRole" />
         </EntityType>
         <EntityContainer Name="XPTOEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Departments" EntityType="Self.Department" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
-          <EntitySet Name="EmployeeRoles" EntityType="XPTOModel.EmployeeRole" />
-          <AssociationSet Name="fk_EmpRoles_Roles" Association="XPTOModel.fk_EmpRoles_Roles">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="EmployeeRole" EntitySet="EmployeeRoles" />
-          </AssociationSet>
           <EntitySet Name="Employees" EntityType="XPTOModel.Employee" />
+          <EntitySet Name="Users" EntityType="XPTOModel.User" />
+          <EntitySet Name="UserRoles" EntityType="XPTOModel.UserRole" />
           <AssociationSet Name="fk_Emp_Department" Association="XPTOModel.fk_Emp_Department">
             <End Role="Department" EntitySet="Departments" />
             <End Role="Employee" EntitySet="Employees" />
           </AssociationSet>
-          <AssociationSet Name="fk_EmpRoles_Emp" Association="XPTOModel.fk_EmpRoles_Emp">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="EmployeeRole" EntitySet="EmployeeRoles" />
+          <AssociationSet Name="fk_UserRoles_Roles" Association="XPTOModel.fk_UserRoles_Roles">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="UserRole" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="fk_UserRoles_User" Association="XPTOModel.fk_UserRoles_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserRole" EntitySet="UserRoles" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="EmployeeRole">
-          <Key>
-            <PropertyRef Name="EmployeeId" />
-          </Key>
-          <Property Name="EmployeeId" Type="Int32" Nullable="false" />
-          <Property Name="RoleId" Type="Int32" Nullable="false" />
-          <Property Name="Deleted" Type="Boolean" Nullable="false" />
-          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
-          <Property Name="LastUpdate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Role" Relationship="XPTOModel.fk_EmpRoles_Roles" FromRole="EmployeeRole" ToRole="Role" />
-          <NavigationProperty Name="Employee" Relationship="XPTOModel.fk_EmpRoles_Emp" FromRole="EmployeeRole" ToRole="Employee" />
-        </EntityType>
-        <Association Name="fk_EmpRoles_Roles">
-          <End Type="XPTOModel.Role" Role="Role" Multiplicity="1" />
-          <End Type="XPTOModel.EmployeeRole" Role="EmployeeRole" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Role">
-              <PropertyRef Name="RoleId" />
-            </Principal>
-            <Dependent Role="EmployeeRole">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Employee">
           <Key>
             <PropertyRef Name="EmployeeId" />
@@ -182,7 +170,6 @@
           <Property Name="EmployeeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FirstName" Type="String" Nullable="false" MaxLength="520" FixedLength="false" Unicode="true" />
           <Property Name="LastName" Type="String" Nullable="false" MaxLength="520" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="MobilePhoneNumber" Type="String" MaxLength="520" FixedLength="false" Unicode="true" />
           <Property Name="OfficePhoneNumber" Type="String" MaxLength="520" FixedLength="false" Unicode="true" />
           <Property Name="DepartmentId" Type="Int32" Nullable="false" />
@@ -193,7 +180,30 @@
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="LastUpdate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Department" Relationship="XPTOModel.fk_Emp_Department" FromRole="Employee" ToRole="Department" />
-          <NavigationProperty Name="EmployeeRole" Relationship="XPTOModel.fk_EmpRoles_Emp" FromRole="Employee" ToRole="EmployeeRole" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="520" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserRole" Relationship="XPTOModel.fk_UserRoles_User" FromRole="User" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Role" Relationship="XPTOModel.fk_UserRoles_Roles" FromRole="UserRole" ToRole="Role" a:GetterAccess="Internal" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+          <NavigationProperty Name="User" Relationship="XPTOModel.fk_UserRoles_User" FromRole="UserRole" ToRole="User" />
         </EntityType>
         <Association Name="fk_Emp_Department">
           <End Type="XPTOModel.Department" Role="Department" Multiplicity="1" />
@@ -207,15 +217,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_EmpRoles_Emp">
-          <End Type="XPTOModel.Employee" Role="Employee" Multiplicity="1" />
-          <End Type="XPTOModel.EmployeeRole" Role="EmployeeRole" Multiplicity="0..1" />
+        <Association Name="fk_UserRoles_Roles">
+          <End Type="XPTOModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="XPTOModel.UserRole" Role="UserRole" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Employee">
-              <PropertyRef Name="EmployeeId" />
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
             </Principal>
-            <Dependent Role="EmployeeRole">
-              <PropertyRef Name="EmployeeId" />
+            <Dependent Role="UserRole">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_UserRoles_User">
+          <End Type="XPTOModel.User" Role="User" Multiplicity="1" />
+          <End Type="XPTOModel.UserRole" Role="UserRole" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -247,17 +269,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EmployeeRoles">
-            <EntityTypeMapping TypeName="XPTOModel.EmployeeRole">
-              <MappingFragment StoreEntitySet="EmployeeRoles">
-                <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Employees">
             <EntityTypeMapping TypeName="XPTOModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
@@ -270,10 +281,32 @@
                 <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
                 <ScalarProperty Name="OfficePhoneNumber" ColumnName="OfficePhoneNumber" />
                 <ScalarProperty Name="MobilePhoneNumber" ColumnName="MobilePhoneNumber" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="XPTOModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="XPTOModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRoles">
+                <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

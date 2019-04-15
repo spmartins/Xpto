@@ -17,7 +17,7 @@ namespace XptoModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Role()
         {
-            this.EmployeeRoles = new HashSet<EmployeeRole>();
+            this.UserRoles = new HashSet<UserRole>();
         }
     
         public int RoleId { get; set; }
@@ -27,6 +27,6 @@ namespace XptoModel
         public Nullable<System.DateTime> LastUpdate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EmployeeRole> EmployeeRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

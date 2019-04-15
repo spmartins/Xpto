@@ -17,7 +17,6 @@ namespace XptoModel
         public int EmployeeId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Password { get; set; }
         public string MobilePhoneNumber { get; set; }
         public string OfficePhoneNumber { get; set; }
         public int DepartmentId { get; set; }
@@ -29,6 +28,5 @@ namespace XptoModel
         public Nullable<System.DateTime> LastUpdate { get; set; }
     
         public virtual Department Department { get; set; }
-        public virtual EmployeeRole EmployeeRole { get; set; }
     }
 }

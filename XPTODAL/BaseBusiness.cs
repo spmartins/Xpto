@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -68,7 +69,7 @@ namespace XPTODAL
         {
             try
             {
-                if (entityValidator == null) // no validation required
+                if (entityValidator == null) 
                 {
                     Add(xptoEntities,entity);
                     return true;

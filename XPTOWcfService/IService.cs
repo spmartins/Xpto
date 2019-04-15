@@ -16,28 +16,41 @@ namespace XPTOWcfService
     {
 
         [OperationContract]
-
         bool AuthenticateUser(Authenticate authenticate);
-
+        [OperationContract]
+        bool CreateUser(User user);
+        [OperationContract]
+        bool DeleteUser(int userId);
+        [OperationContract]
+        User GetUserById(int userId);
+        [OperationContract]
+        IQueryable<ServiceUserRoles> GetUserRoles(int userId);
+        [OperationContract]
+        IQueryable<Role> GetAllRoles();
+        [OperationContract]
+        IQueryable<User> GetAllUsers();
+        [OperationContract]
         bool CreateEmployee(Employee employee);
-
+        [OperationContract]
         bool EmailExists(string email);
-
-        Employee GetEmployeeById(int employeeId);
-
+        [OperationContract]
+        ServiceEmployee GetEmployeeById(int employeeId);
+        [OperationContract]
         bool DeleteEmployee(int employeeId);
-
+        [OperationContract]
         bool UpdateEmployee(Employee employee);
-
-        IQueryable<Employee> GetAllEmployees();
-
+        [OperationContract]
+        IQueryable<ServiceEmployee> GetAllEmployees();
+        [OperationContract]
         bool CreateDepartment(Department department);
-
+        [OperationContract]
         bool UpdateDepartment(Department department);
-
+        [OperationContract]
         bool DeleteDepartment(int departmentId);
-
+        [OperationContract]
         IQueryable<Department> GetAllDepartments();
+        [OperationContract]
+        Department GetDepartmentById(int departmentId);
 
     }
 
@@ -50,8 +63,56 @@ namespace XPTOWcfService
         [DataMember]
         public string Password { get; set; }
     }
+    [DataContract]
+    public class ServiceUserRoles
+    {
+        [DataMember]
+        public int UserId { get; set; }
+        [DataMember]
+        public int RoleId { get; set; }
+        [DataMember]
+        public string RoleName { get; set; }
+        [DataMember]
+        public bool Deleted { get; set; }
+        [DataMember]
+        public int ModifiedBy { get; set; }
+        [DataMember]
+        public Nullable<System.DateTime> LastUpdate { get; set; }
+    }
 
     [DataContract]
+    public class ServiceEmployee
+    {
+        [DataMember]
+        public int EmployeeId { get; set; }
+        [DataMember]
+        public string FirstName { get; set; }
+        [DataMember]
+        public string LastName { get; set; }
+        [DataMember]
+        public string MobilePhoneNumber { get; set; }
+        [DataMember]
+        public string OfficePhoneNumber { get; set; }
+        [DataMember]
+        public int DepartmentId { get; set; }
+        [DataMember]
+        public System.DateTime HireDate { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public Nullable<System.DateTime> ExitDate { get; set; }
+        [DataMember]
+        public bool Deleted { get; set; }
+        [DataMember]
+        public int ModifiedBy { get; set; }
+        [DataMember]
+        public Nullable<System.DateTime> LastUpdate { get; set; }
+        [DataMember]
+        public string DepartmentName{ get; set; }
+    }
+
+
+        [DataContract]
     public class FaultContract
     {
         [DataMember]

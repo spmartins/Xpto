@@ -18,6 +18,7 @@ namespace XptoModel
         public XPTOEntities()
             : base("name=XPTOEntities")
         {
+            this.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -27,7 +28,8 @@ namespace XptoModel
     
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<EmployeeRole> EmployeeRoles { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
     }
 }

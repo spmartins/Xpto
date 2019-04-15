@@ -10,12 +10,11 @@ namespace XPTO.UnitTest
     [TestClass]
     public class EmployeeTest
     {
-        private readonly Authenticate _authenticate = new Authenticate();
+       
         private readonly Employee _emp = new Employee
         {
             FirstName = "TestName",
             LastName = "TestLastName",
-            Password = "TestPassword",
             MobilePhoneNumber = "Test123456789",
             OfficePhoneNumber = "Test123456789",
             DepartmentId = 1,
@@ -25,12 +24,18 @@ namespace XPTO.UnitTest
             ModifiedBy = 1
         };
 
-        private XPTOEntities _xptoEntities;
+        private readonly User _user = new User
+        {
+            Email = "TestUserEmail",
+            Password = "TestPassword",
+        };
+
+        private Service _service;
 
         [TestInitialize]
         public void SetUp()
         {
-            _xptoEntities = new XPTOEntities();
+            _service = new Service();
         }
 
 
@@ -41,34 +46,12 @@ namespace XPTO.UnitTest
         {
             using (TransactionScope transaction = new TransactionScope())
             {
-                XPTOWcfService.Service service = new XPTOWcfService.Service();
                 _emp.Email = email;
-                var employee = service.CreateEmployee(_emp);
-                var employees = service.GetAllEmployees();
+                var employee = _service.CreateEmployee(_emp);
+                var employees = _service.GetAllEmployees();
                 bool employeeCreated = employees.Where(e=> e.Email == _emp.Email).Any() ? true : false;
 
                 Assert.AreEqual(true, employeeCreated, "Employee created");
-            }
-        }
-
-        [TestMethod]
-        [DataRow("TestEmail2@enear.co","123456")]
-        [DataRow("TestEmail3@enear.co","789101")]
-        public void TestAuthenticateUser(string email, string password)
-        {
-            using (TransactionScope transaction = new TransactionScope())
-            {
-                bool validate = false;
-                XPTOWcfService.Service service = new XPTOWcfService.Service();
-                _emp.Email = email;
-                _emp.Password = password;
-                if (service.CreateEmployee(_emp))
-                {
-                    _authenticate.Email = email;
-                    _authenticate.Password = password;
-                    validate = service.AuthenticateUser(_authenticate);
-                }
-                Assert.AreEqual(true, validate, "User Validated");
             }
         }
 
@@ -78,11 +61,10 @@ namespace XPTO.UnitTest
             using (TransactionScope transaction = new TransactionScope())
             {
                 bool validate = false;
-                XPTOWcfService.Service service = new XPTOWcfService.Service();
-                var employee = service.GetAllEmployees().FirstOrDefault();
+                var employee = _service.GetAllEmployees().FirstOrDefault();
                 if (employee != null)
                 {
-                    validate = service.DeleteEmployee(employee.EmployeeId);
+                    validate = _service.DeleteEmployee(employee.EmployeeId);
                 }
                 Assert.AreEqual(true, validate, "Employee deleted");
             }

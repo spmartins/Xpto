@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using XPTOBLL.Models;
 using XPTOBLL.Validator;
 using XPTODAL;
 using XptoModel;
@@ -13,32 +14,58 @@ namespace XPTOBLL
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(EmployeeBLL));
 
-        private XPTOEntities XptoEntities { get; set; }
+        private XPTOEntities _XptoEntities { get; set; }
 
         protected XPTOEntities Xpto
         {
-            get { return XptoEntities ?? (new XPTOEntities()); }
+            get { return _XptoEntities ?? (_XptoEntities = new XPTOEntities()); }
         }
 
-        public IQueryable<Employee> GetAllEmployees()
+        public IQueryable<Employees> GetAllEmployees()
         {
-            return from x in Xpto.Employees
-                   orderby x.EmployeeId
-                   select x;
+            return (from e in Xpto.Employees
+                    join d in Xpto.Departments on e.DepartmentId equals d.DepartmentId
+                    orderby e.EmployeeId
+                    select new Employees
+                    {
+                        EmployeeId = e.EmployeeId,
+                        FirstName = e.FirstName,
+                        LastName = e.LastName,
+                        HireDate = e.HireDate,
+                        MobilePhoneNumber = e.MobilePhoneNumber,
+                        OfficePhoneNumber = e.OfficePhoneNumber,
+                        DepartmentId = e.DepartmentId,
+                        DepartmentName = d.DepartmentName,
+                        Email = e.Email,
+                        ExitDate = e.ExitDate,
+                        Deleted = e.Deleted,
+                        ModifiedBy = e.ModifiedBy,
+                        LastUpdate = e.LastUpdate
+                    });
         }
 
-        public IQueryable<EmployeeRole> GetEmployeeRoles(int employeeId)
-        {
-            return from x in Xpto.EmployeeRoles
-                   where x.EmployeeId == employeeId
-                   select x;
-        }
 
-        public Employee GetEmployeeById(int employeeId)
+        public Employees GetEmployeeById(int employeeId)
         {
-            var query = from x in Xpto.Employees
-                   where x.EmployeeId == employeeId
-                   select x;
+            var query = from e in Xpto.Employees
+                        join d in Xpto.Departments on e.DepartmentId equals d.DepartmentId
+                        where e.EmployeeId == employeeId
+                        select new Employees
+                        {
+                            EmployeeId = e.EmployeeId,
+                            FirstName = e.FirstName,
+                            LastName = e.LastName,
+                            HireDate = e.HireDate,
+                            MobilePhoneNumber = e.MobilePhoneNumber,
+                            OfficePhoneNumber = e.OfficePhoneNumber,
+                            DepartmentId = e.DepartmentId,
+                            DepartmentName = d.DepartmentName,
+                            Email = e.Email,
+                            ExitDate = e.ExitDate,
+                            Deleted = e.Deleted,
+                            ModifiedBy = e.ModifiedBy,
+                            LastUpdate = e.LastUpdate
+                        };
 
             return query.FirstOrDefault();
         }
@@ -47,12 +74,8 @@ namespace XPTOBLL
         {
             try
             {
-                if (!CheckIfEmailExists(employee.Email)){
-                    employee.Password = MD5Crypt.Encrypt(employee.Password);
-                    return AddEntity(Xpto, employee);
-                }
-                return false;
-               
+                return AddEntity(Xpto, employee);
+
             }
             catch (Exception ex)
             {
@@ -66,12 +89,11 @@ namespace XPTOBLL
         {
             try
             {
-                employee.Password = MD5Crypt.Encrypt(employee.Password);
                 return UpdateEntity(Xpto, employee, typeof(EmployeeValidator));
             }
             catch (Exception ex)
             {
-                Log.Error("CreateEmployee", ex);
+                Log.Error("UpdateEmployee", ex);
                 return false;
             }
 
@@ -88,15 +110,11 @@ namespace XPTOBLL
             }
             catch (Exception ex)
             {
-                Log.Error("CreateEmployee", ex);
+                Log.Error("DeleteEmployee", ex);
                 return false;
             }
 
         }
-
-        public bool CheckIfEmailExists(string email)
-        {
-            return Xpto.Employees.Any(e => e.Email == email);
-        }
+        
     }
 }
